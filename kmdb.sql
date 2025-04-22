@@ -112,8 +112,8 @@
 
 -- Drop existing tables, so you'll start fresh each time this script is run.
 DROP TABLE IF EXISTS movies;
-DROP TABLE IF EXISTS studio;
-DROP TABLE IF EXISTS actor;
+DROP TABLE IF EXISTS studios;
+DROP TABLE IF EXISTS actors;
 DROP TABLE IF EXISTS characters;
 
 -- Create new tables, according to your domain model
@@ -125,7 +125,7 @@ CREATE TABLE movies (
   studio_id INTEGER
 );
 
-CREATE TABLE studio (
+CREATE TABLE studios (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   studio_name TEXT
 );
@@ -150,7 +150,7 @@ VALUES ("Batman Begins", "2005", "PG-13", "1"),
 ("The Dark Knight", "2008", "PG-13", "1"),
 ("The Dark Knight Rises", "2012", "PG-13", "1");
 
-INSERT INTO studio (studio_name)
+INSERT INTO studios (studio_name)
 VALUES ("Warner Bros.");
 
 INSERT INTO actors (actor_name)
@@ -164,7 +164,7 @@ VALUES ("Christian Bale"),
 ("Maggie Gyllenhaal"),
 ("Tom Hardy"),
 ("Joseph Gordon-Levitt"),
-("Anne Hathaway ");
+("Anne Hathaway");
 
 INSERT INTO characters (character_name, actor_id, movie_id)
 VALUES ("Bruce Wayne", "1", "1"),
@@ -188,8 +188,8 @@ VALUES ("Bruce Wayne", "1", "1"),
 .print ""
 
 -- The SQL statement for the movies output
-SELECT movies.movie_name, movies.year_released, movies.rating, studio.studio_name FROM movies
-INNER JOIN studio ON studio.id = movies.studio_id;
+SELECT movies.movie_name, movies.year_released, movies.rating, studios.studio_name FROM movies
+INNER JOIN studios ON studios.id = movies.studio_id;
 
 -- Prints a header for the cast output
 .print ""
@@ -197,9 +197,19 @@ INNER JOIN studio ON studio.id = movies.studio_id;
 .print "========"
 .print ""
 
-
 -- The SQL statement for the cast output
 SELECT movies.movie_name, actors.actor_name, characters.character_name FROM characters
 INNER JOIN movies on movies.id = characters.movie_id
 INNER JOIN actors on actors.id = characters.actor_id
-ORDER BY movies.id, actors.id;
+ORDER BY movies.id;
+
+-- To see movies made by a specific studio (from user stories) 
+-- SELECT movies.movie_name FROM movies
+-- INNER JOIN studios ON studios.id = movies.studio_id
+-- WHERE studio_name = "Warner Bros.";
+
+-- To see movies which a single actor has acted in (from user stories)
+-- SELECT movies.movie_name FROM movies
+-- INNER JOIN characters ON characters.movie_id = movies.id
+-- INNER JOIN actors on actors.id = characters.actor_id
+-- WHERE actors.actor_name = "Heath Ledger";
